@@ -85,24 +85,28 @@ count = Para.Count_Memory(1,:);
 dispObjectiveValueData(ObjectiveValueDatas_post(1:Elite_Num+1,:), count, dispObjectiveValueData_Str)
 
 if Para.IfScat
-    scatter(zeros(Para.Pop_Num,1) + ii, ObjectiveValueDatas_post(:,1))
-    xlabel('世代数')
-    ylabel('評価値(低いほど良い)')
-%     ylim(ax100, [max(0, ObjectiveValueDatas_post(1,1) - (200-ObjectiveValueDatas_post(1,1)) * 0.1), min(330, 322 + (322-ObjectiveValueDatas_post(1,1)) * 0.1)])
-%     yticks(ax100, 'auto')
-%     ax100.YTick = sort([ax100.YTick, 111]);
-    grid(ax100, 'on')
+    hold(ax100,'on')
+    scatter(ax100, zeros(Pop_Num,1) + ii, ObjectiveValueDatas_post(:,1))
+    hold(ax100,'off')
     drawnow
 else
-        scatter(ax100, 1:Pop_Num, ObjectiveValueDatas_post(:,1))
-        xlabel(ax100, '順位')
-        ylabel(ax100, '評価値(低いほど良い)')
-        drawnow
-        
-        ActivatingRate_tmp = reshape(ActivatingRate_post(1, :,:), Joint_num, size(Data_Set_Time,1));
-        plot(ax101, Data_Set_Time, ActivatingRate_tmp)
-        drawnow
+    scatter(ax100, 1:Pop_Num, ObjectiveValueDatas_post(:,1))
+    xlabel(ax100, '順位')
+    ylabel(ax100, '評価値(低いほど良い)')
+    drawnow
+    
+    plot_box(ax101)
+    ActivatingRate_tmp = reshape(ActivatingRate_post(1, :,:), Joint_num, size(Data_Set_Time,1))';
+    velocity_tmp = Para.get_velocity_fromAR(ActivatingRate_tmp);
+    trajectory_tmp = get_trajectory_edge(velocity_tmp);
+    
+    hold(ax101, 'on')
+    %         plot(ax101, trajectory_tmp(:,1), trajectory_tmp(:,2), '-o')
+    quiver(ax101, trajectory_tmp(1:end-1,1), trajectory_tmp(1:end-1,2), diff(trajectory_tmp(:,1)), diff(trajectory_tmp(:,2)), 'autoscale', 'off')
+    hold(ax101, 'off')
+    drawnow
 end
+
 toc
 
 if Para.Take_Over
