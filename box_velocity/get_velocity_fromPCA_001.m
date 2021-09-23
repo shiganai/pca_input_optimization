@@ -1,10 +1,9 @@
-function velocity = get_velocity_fromPCA_001(pcaScore, row_num, col_num)
+function velocity = get_velocity_fromPCA_001(pcaScore_ratio, row_num, col_num)
 % Para.velocity_variety = -1.0000   -0.5000         0    0.5000    1.0000
 % Para.evaluating_time = 0:1e-2:5;
 % target_vm = Para.velocity_matrix_NaN
 % target_vm = unique(target_vm, 'rows');
 
-pcaScore = reshape(pcaScore, 1, 10);
 
 coeff_vm = [
    -0.1200   -0.0350    0.0651   -0.0430   -0.0478    0.0195    0.7676    0.0970    0.6091   -0.0776
@@ -23,8 +22,16 @@ mu_vm = [
     -0.8131   -0.7578   -0.6367   -0.3381   -0.2151    0.5000    0.1211    0.3997    0.4734    0.4946
     ];
 
+pcaScore_ratio = reshape(pcaScore_ratio, 1, 10);
+
+pcaScore_max = sum(abs(coeff_vm),1);
+pcaScore = pcaScore_max .* pcaScore_ratio;
+
 velocity = pcaScore * coeff_vm' + mu_vm;
 velocity = reshape(velocity, row_num, col_num);
+
+velocity(velocity > 1) = 1;
+velocity(velocity < -1) = -1;
 
 end
 
