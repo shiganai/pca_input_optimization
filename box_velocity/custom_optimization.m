@@ -137,8 +137,10 @@ while true
     ii = ii + 1;
     Para.Gen_Num = ii;
     
-    fprintf(strcat("第", num2str(ii), "世代計算中\n"))
-    fprintf(strcat("Transition_Probability = ", num2str(Transition_Probability), "\n"))
+    if mod(ii, 100) == 0
+        fprintf(strcat("第", num2str(ii), "世代計算中\n"))
+        fprintf(strcat("Transition_Probability = ", num2str(Transition_Probability), "\n"))
+    end
     
     ActivatingRate = Para.ActivatingRate;
     ObjectiveValueDatas = Para.ObjectiveValueDatas;
@@ -196,7 +198,7 @@ while true
     ActivatingRate_post = ActivatingRate_post(index_pre,:,:);
     
     if ObjectiveValueDatas_post(1,1) < ObjectiveValueDatas(1,1)
-        warning("目的関数の値が下がりました")
+%         warning("目的関数の値が下がりました")
         Para.Midterm_Elitest_ActivatingRate(size(Para.Midterm_Elitest_ActivatingRate,1) + 1,:,:) = ActivatingRate_post(1,:,:);
         Para.Midterm_Elitest_ObjectiveValueDatas(size(Para.Midterm_Elitest_ObjectiveValueDatas,1) + 1, :) = ObjectiveValueDatas_post(1,:);
         
@@ -211,7 +213,9 @@ while true
     %Gainした個体の数の平均の標準偏差でNo_Gain_Para.No_Gain_Gen_Numを増やす
     if ii >= 2*Average_Range - 1
         Mean_Std = std(Count_Mean_Memory);
-        fprintf(strcat('Mean_Std = ', num2str(Mean_Std), '\n'))
+        if mod(ii, 100) == 0
+            fprintf(strcat('Mean_Std = ', num2str(Mean_Std), '\n'))
+        end
         
         if Transition_Probability > Base_Transition_Probability % Aneealing中
             if Mean_Std > Mean_Std_Threshold
@@ -232,29 +236,35 @@ while true
         end
     end
     
-    dispObjectiveValueData(ObjectiveValueDatas_post(1:Elite_Num+1,:), count, dispObjectiveValueData_Str)
+    if mod(ii, 100) == 0
+        dispObjectiveValueData(ObjectiveValueDatas_post(1:Elite_Num+1,:), count, dispObjectiveValueData_Str)
+        toc
+        tic
+    end
     
-    if Para.IfScat
-        hold(ax100,'on')
-        scatter(ax100, zeros(Pop_Num,1) + ii, ObjectiveValueDatas_post(:,1))
-        hold(ax100,'off')
-        drawnow
-    else
-        scatter(ax100, 1:Pop_Num, ObjectiveValueDatas_post(:,1))
-        xlabel(ax100, '順位')
-        ylabel(ax100, '評価値(低いほど良い)')
-        drawnow
-        
-        plot_box(ax101)
-        ActivatingRate_tmp = reshape(ActivatingRate_post(1, :,:), Joint_num, size(Data_Set_Time,1))';
-        velocity_tmp = Para.get_velocity_fromAR(ActivatingRate_tmp);
-        trajectory_tmp = get_trajectory_edge(velocity_tmp);
-        
-        hold(ax101, 'on')
-%         plot(ax101, trajectory_tmp(:,1), trajectory_tmp(:,2), '-o')
-        quiver(ax101, trajectory_tmp(1:end-1,1), trajectory_tmp(1:end-1,2), diff(trajectory_tmp(:,1)), diff(trajectory_tmp(:,2)), 'autoscale', 'off')
-        hold(ax101, 'off')
-        drawnow
+    if mod(ii, 25) == 0
+        if Para.IfScat
+            hold(ax100,'on')
+            scatter(ax100, zeros(Pop_Num,1) + ii, ObjectiveValueDatas_post(:,1))
+            hold(ax100,'off')
+            drawnow
+        else
+            scatter(ax100, 1:Pop_Num, ObjectiveValueDatas_post(:,1))
+            xlabel(ax100, '順位')
+            ylabel(ax100, '評価値(低いほど良い)')
+            drawnow
+            
+            plot_box(ax101)
+            ActivatingRate_tmp = reshape(ActivatingRate_post(1, :,:), Joint_num, size(Data_Set_Time,1))';
+            velocity_tmp = Para.get_velocity_fromAR(ActivatingRate_tmp);
+            trajectory_tmp = get_trajectory_edge(velocity_tmp);
+            
+            hold(ax101, 'on')
+            %         plot(ax101, trajectory_tmp(:,1), trajectory_tmp(:,2), '-o')
+            quiver(ax101, trajectory_tmp(1:end-1,1), trajectory_tmp(1:end-1,2), diff(trajectory_tmp(:,1)), diff(trajectory_tmp(:,2)), 'autoscale', 'off')
+            hold(ax101, 'off')
+            drawnow
+        end
     end
     
         
@@ -299,8 +309,6 @@ while true
     end
     %}
     
-    toc
-    tic
 end
 
 Para.ActivatingRate = ActivatingRate_post;
