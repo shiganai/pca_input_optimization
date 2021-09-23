@@ -2,7 +2,6 @@
 clear all
 
 AddPath_MATLABDATA
-AddPath_3Links
 
 formatOut = 'yymmddHHMMss';
 dateString = datestr(now,formatOut);
@@ -30,6 +29,7 @@ loop_limit = 100;
 
 for loop_index = 1:loop_limit
     
+    clear('Para')
     rng shuffle
     
     Para.Take_Over = false;
@@ -37,11 +37,16 @@ for loop_index = 1:loop_limit
     check_saving_dir(Saving_Dir_Name)
     
     if Para.Take_Over
-        Take_Over_Str = "5950x_210905111643_NoVibe-FyWrist-Component_spinNum_-1,342_gen_17565";
+        Take_Over_Str = "5950x_210923122736_input_by_pca_pop_200_gen_10";
         load(Take_Over_Str)
         
         Para.Take_Over = true;
         Para.Take_Over_Str = [Para.Take_Over_Str; Take_Over_Str];
+        
+%         Para.Base_Transition_Probability = 0;
+%         Para.Max_Transition_Probability = 0;
+%         Para.Gen_Num_Limit = 1e2;
+%         Para.Elite_Num = 0;
     else
         % CONDITIONS
         warning('off', 'MATLAB:structOnObject')
