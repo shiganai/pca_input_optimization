@@ -80,16 +80,16 @@ for loop_index = 1:loop_limit
         Para.Minimum_Transition_Probablity = 0;
         
         % NoVibe-FyWrist-Component
-        %{
-    Para.Mode_String = 'input_by_time';
-    Para.get_velocity_fromAR = @(AR) reshape(AR, size(Para.Data_Set_Time, 1), Para.Joint_num);
-    Para.evaluating_time = 0:1e-2:5;
-    Para.get_trajectory = @(velocity, evaluating_time) get_trajectory(velocity, evaluating_time);
-    Para.Objective_Fcn = @(AR) objectiveFcn(AR, Para.get_trajectory, Para.get_velocity_fromAR, Para.evaluating_time);
+        %{-
+        Para.Mode_String = 'input_by_time';
+        Para.get_velocity_fromAR = @(AR) reshape(AR, size(Para.Data_Set_Time, 1), Para.Joint_num);
+        Para.evaluating_time = 0:1e-2:5;
+        Para.get_trajectory = @(velocity, evaluating_time) get_trajectory(velocity, evaluating_time);
+        Para.Objective_Fcn = @(AR) objectiveFcn(AR, Para.get_trajectory, Para.get_velocity_fromAR, Para.evaluating_time);
         %}
         
         % NoVibe-FyWrist-Component
-        %{-
+        %{
         Para.Mode_String = 'input_by_pca';
         Para.get_velocity_fromAR = @(AR) get_velocity_fromPCA_001(AR, size(Para.Data_Set_Time, 1), Para.Joint_num);
         Para.evaluating_time = 0:1e-2:5;
