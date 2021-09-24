@@ -198,7 +198,7 @@ while true
     ActivatingRate_post = ActivatingRate_post(index_pre,:,:);
     
     if ObjectiveValueDatas_post(1,1) < ObjectiveValueDatas(1,1)
-%         warning("目的関数の値が下がりました")
+        warning("目的関数の値が下がりました")
         Para.Midterm_Elitest_ActivatingRate(size(Para.Midterm_Elitest_ActivatingRate,1) + 1,:,:) = ActivatingRate_post(1,:,:);
         Para.Midterm_Elitest_ObjectiveValueDatas(size(Para.Midterm_Elitest_ObjectiveValueDatas,1) + 1, :) = ObjectiveValueDatas_post(1,:);
         
