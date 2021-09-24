@@ -3,27 +3,10 @@ clear all
 
 AddPath_MATLABDATA
 
+
 formatOut = 'yymmddHHMMss';
 dateString = datestr(now,formatOut);
 loop_start_time_str = dateString;
-
-Saving_Dir_Name = [
-    'pca_input_optimization\box_velocity\', loop_start_time_str
-    ];
-
-[MATLAB_data_dir, username] = find_UserData;
-
-Saving_Name_tmp = [...
-    MATLAB_data_dir, ...
-    '\', Saving_Dir_Name, ...
-    '\', username];
-
-Saving_Folder_check_index = find(Saving_Name_tmp == '\', 1, 'last');
-Saving_Folder_check = Saving_Name_tmp(1:Saving_Folder_check_index - 1);
-
-if ~exist(Saving_Folder_check,'dir')
-   mkdir(Saving_Folder_check)
-end
 
 loop_limit = 100;
 
@@ -34,8 +17,6 @@ for loop_index = 1:loop_limit
     
     Para.Take_Over = false;
     
-    check_saving_dir(Saving_Dir_Name)
-    
     if Para.Take_Over
         Take_Over_Str = "5950x_210923122736_input_by_pca_pop_200_gen_10";
         load(Take_Over_Str)
@@ -43,10 +24,10 @@ for loop_index = 1:loop_limit
         Para.Take_Over = true;
         Para.Take_Over_Str = [Para.Take_Over_Str; Take_Over_Str];
         
-%         Para.Base_Transition_Probability = 0;
-%         Para.Max_Transition_Probability = 0;
-%         Para.Gen_Num_Limit = 1e2;
-%         Para.Elite_Num = 0;
+        %         Para.Base_Transition_Probability = 0;
+        %         Para.Max_Transition_Probability = 0;
+        %         Para.Gen_Num_Limit = 1e2;
+        %         Para.Elite_Num = 0;
     else
         % CONDITIONS
         warning('off', 'MATLAB:structOnObject')
@@ -56,7 +37,7 @@ for loop_index = 1:loop_limit
         Para.Take_Over_Str = "";
         % ABOUT POP AND GENERATIONS
         Para.Pop_Num = 2e3;
-        Para.Gen_Num_Limit = 1e2;
+        Para.Gen_Num_Limit = 1e3;
         Para.Max_Annealing_Count_Without_Gain = 5;
         Para.Min_Annealing_Gen = 5;
         Para.No_Gain_Gen_Lim = 10;
@@ -74,8 +55,8 @@ for loop_index = 1:loop_limit
         Para.Elite_Num = 2 - mod(Para.Pop_Num,2);
         
         % ABOUT Annealing
-        Para.Base_Transition_Probability = 100;
-        Para.Max_Transition_Probability = 100;
+        Para.Base_Transition_Probability = 5;
+        Para.Max_Transition_Probability = 97;
         
         Para.Minimum_Transition_Probablity = 0;
         
@@ -102,9 +83,29 @@ for loop_index = 1:loop_limit
         %     Para = load_and_fit_init_Mdatas(Para, 'Para_1018140016_pop_2400_gen_15794', 2400);
         
         Para.optimizing_func = @custom_optimization;
+        
+        Saving_Dir_Name = [
+            'pca_input_optimization\box_velocity\', Para.Mode_String, loop_start_time_str
+            ];
+        
+        [MATLAB_data_dir, username] = find_UserData;
+        
+        Saving_Name_tmp = [...
+            MATLAB_data_dir, ...
+            '\', Saving_Dir_Name, ...
+            '\', username];
+        
+        Saving_Folder_check_index = find(Saving_Name_tmp == '\', 1, 'last');
+        Saving_Folder_check = Saving_Name_tmp(1:Saving_Folder_check_index - 1);
+        
+        if ~exist(Saving_Folder_check,'dir')
+            mkdir(Saving_Folder_check)
+        end
+        check_saving_dir(Saving_Dir_Name)
+        
+        Para.Saving_Dir_Name = Saving_Dir_Name;
     end
     
-    Para.Saving_Dir_Name = Saving_Dir_Name;
     
     Para.IfScat = 0;
     
