@@ -1,9 +1,10 @@
 load('Para')
 
 target_vm = Para.velocity_matrix_NaN(Para.performance < 4, :);
+target_performance = Para.performance(Para.performance < 4);
 target_vm = unique(target_vm, 'rows');
 
-[coeff_vm, score_vm, latent_vm, ~, ~, mu_vm] = pca(target_vm);
+[coeff_vm, score_vm, latent_vm, ~, ~, mu_vm] = pca(target_vm, 'Weights', 1./(1 + target_performance));
 
 varname = [
     strcat('x', num2str((1:5)'))

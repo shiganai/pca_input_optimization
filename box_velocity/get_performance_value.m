@@ -7,11 +7,11 @@ y_trajectory = trajectory(:,2);
 
 if any(~isInBox)
     evaluating_index = find(~isInBox, 1) - 1;
-    performance_value = NaN;
+    performance_value = 10;
 else
     evaluating_index = size(x_trajectory, 1);
+    performance_value = get_norm1(trajectory(evaluating_index, :), isInBox_array(evaluating_index,:));
 end
-performance_value = get_norm1(trajectory(evaluating_index, :), isInBox_array(evaluating_index,:));
 
 if evaluating_index == size(evaluating_time(:), 1)
     nan_start_index = ceil(evaluating_time(evaluating_index)) + 1;
