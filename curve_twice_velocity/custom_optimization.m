@@ -18,7 +18,8 @@ Mean_Std_Threshold = Para.Mean_Std_Threshold;
 Mutation_Max_Ratio=Para.Mutation_Max_Ratio; % (%) 1-5%が推奨
 Mutation_Max_num=round(Mutation_Max_Ratio*0.01*numel(Para.Data_Set_Time)*2);
 
-Joint_num = Para.Joint_num;
+input_dim2_num = Para.input_dim2_num;
+input_dim3_num = Para.input_dim3_num;
 % q0 = Para.q0;
 Data_Set_Time = Para.Data_Set_Time;
 ActivatingRate_Step_num = Para.ActivatingRate_Step_num;
@@ -96,7 +97,7 @@ else
     drawnow
     
     plot_box(ax101)
-    ActivatingRate_tmp = reshape(ActivatingRate_post(1, :,:), Joint_num, size(Data_Set_Time,1))';
+    ActivatingRate_tmp = reshape(ActivatingRate_post(1, :,:), input_dim2_num, input_dim3_num)';
     velocity_tmp = Para.get_velocity_fromAR(ActivatingRate_tmp);
     trajectory_tmp = get_trajectory_edge(velocity_tmp);
     
@@ -152,7 +153,7 @@ while true
     
     notNaN_num = numel(find(~isnan(ObjectiveValueDatas(:,1))));
     
-    ActivatingRate_post = mixing_Children(Elite_Num, Child_Num, notNaN_num, Joint_num, Data_Set_Time, ActivatingRate_post, ActivatingRate, Mutation_Max_num, ActivatingRate_Step_num);
+    ActivatingRate_post = mixing_Children(Elite_Num, Child_Num, notNaN_num, input_dim2_num, input_dim3_num, ActivatingRate_post, ActivatingRate, Mutation_Max_num, ActivatingRate_Step_num);
     
     Para.ActivatingRate = ActivatingRate_post;
     ObjectiveValueDatas_post = custom_find_ObjectiveValueDatas(Para);
@@ -255,7 +256,7 @@ while true
             drawnow
             
             plot_box(ax101)
-            ActivatingRate_tmp = reshape(ActivatingRate_post(1, :,:), Joint_num, size(Data_Set_Time,1))';
+            ActivatingRate_tmp = reshape(ActivatingRate_post(1, :,:), input_dim2_num, input_dim3_num)';
             velocity_tmp = Para.get_velocity_fromAR(ActivatingRate_tmp);
             trajectory_tmp = get_trajectory_edge(velocity_tmp);
             

@@ -1,14 +1,15 @@
 load('Para')
 
-target_vm = Para.velocity_matrix_NaN(Para.performance < 4, :);
-target_performance = Para.performance(Para.performance < 4);
+target_performance = 10;
+target_vm = Para.velocity_matrix_NaN(Para.performance < target_performance, :);
+target_performance = Para.performance(Para.performance < target_performance);
 target_vm = unique(target_vm, 'rows');
 
 [coeff_vm, score_vm, latent_vm, ~, ~, mu_vm] = pca(target_vm, 'Weights', 1./(1 + target_performance));
 
 varname = [
-    strcat('x', num2str((1:5)'))
-    strcat('y', num2str((1:5)'))
+    strcat('x', num2str((1:7)'))
+    strcat('y', num2str((1:7)'))
     ];
 % biplot(coeff_vm(:,1:2),'scores',score_vm(:,1:2), 'VarLabels', varname)
 
@@ -23,11 +24,11 @@ for coeff_index = 1:size(coeff_vm, 2)
     pcaScore(coeff_index) = 1;
     velocity = pcaScore * coeff_vm' + mu_vm;
     velocity_change = velocity - velocity_zero;
-    velocity_change = reshape(velocity_change, 5, 2);
+    velocity_change = reshape(velocity_change, 7, 2);
     trajectory = get_trajectory_edge(velocity_change);
     
     subplot(1,2,1)
-    plot(1:5, velocity_change, '-o')
+    plot(1:7, velocity_change, '-o')
     legend('x', 'y')
     ylim([-1, 1])
     ax = gca;

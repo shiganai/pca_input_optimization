@@ -9,7 +9,7 @@ for condition_index = 1:2
     dateString = datestr(now,formatOut);
     loop_start_time_str = dateString;
     
-    loop_limit = 300;
+    loop_limit = 100;
     
     for loop_index = 1:loop_limit
         
@@ -46,8 +46,8 @@ for condition_index = 1:2
             Para.Mean_Std_Threshold = 2e-4;
             
             % ABOUT DATA
-            Para.Data_Set_Time = (1:5)';
-            Para.Joint_num = 2;
+            Para.Data_Set_Time = (1:7)';
+            Para.Data_Category_num = 2; % vx and vy
             Para.ActivatingRate_Step_num = 10;
             Para.Mutation_Max_Ratio = 5;
             Para.ifResetAll = false;
@@ -61,18 +61,22 @@ for condition_index = 1:2
             
             Para.Minimum_Transition_Probablity = 0;
             
-            if condition_index == 2
+            if condition_index == 1
                 % NoVibe-FyWrist-Component
                 Para.Mode_String = 'input_by_time';
-                Para.get_velocity_fromAR = @(AR) reshape(AR, size(Para.Data_Set_Time, 1), Para.Joint_num);
-                Para.evaluating_time = 0:1e-2:5;
+                Para.input_dim2_num = 2;
+                Para.input_dim3_num = size(Para.Data_Set_Time, 1);
+                Para.get_velocity_fromAR = @(AR) reshape(AR, size(Para.Data_Set_Time, 1), Para.Data_Category_num);
+                Para.evaluating_time = 0:1e-2:7;
                 Para.get_trajectory = @(velocity, evaluating_time) get_trajectory(velocity, evaluating_time);
                 Para.Objective_Fcn = @(AR) objectiveFcn(AR, Para.get_trajectory, Para.get_velocity_fromAR, Para.evaluating_time);
-            elseif condition_index == 1
+            elseif condition_index == 2
                 % NoVibe-FyWrist-Component
                 Para.Mode_String = 'input_by_pca';
-                Para.get_velocity_fromAR = @(AR) get_velocity_fromPCA_001(AR, size(Para.Data_Set_Time, 1), Para.Joint_num);
-                Para.evaluating_time = 0:1e-2:5;
+                Para.input_dim2_num = 2;
+                Para.input_dim3_num = 2 * size(Para.Data_Set_Time, 1);
+                Para.get_velocity_fromAR = @(AR) get_velocity_fromPCA_001(AR, size(Para.Data_Set_Time, 1), Para.Data_Category_num);
+                Para.evaluating_time = 0:1e-2:7;
                 Para.get_trajectory = @(velocity, evaluating_time) get_trajectory(velocity, evaluating_time);
                 Para.Objective_Fcn = @(AR) objectiveFcn(AR, Para.get_trajectory, Para.get_velocity_fromAR, Para.evaluating_time);
             end
@@ -84,7 +88,11 @@ for condition_index = 1:2
             Para.optimizing_func = @custom_optimization;
             
             Saving_Dir_Name = [
-                'pca_input_optimization\box_velocity\', Para.Mode_String, loop_start_time_str
+                'pca_input_optimization\curve_twice\', ...
+                'popNum_', num2str(Para.Pop_Num), ...
+                '_GenLim_', num2str(Para.Gen_Num_Limit), ...
+                '_', loop_start_time_str, ...
+                '\', Para.Mode_String
                 ];
             
             [MATLAB_data_dir, username] = find_UserData;
@@ -92,7 +100,8 @@ for condition_index = 1:2
             Saving_Name_tmp = [...
                 MATLAB_data_dir, ...
                 '\', Saving_Dir_Name, ...
-                '\', username];
+                '\', username,...
+                ''];
             
             Saving_Folder_check_index = find(Saving_Name_tmp == '\', 1, 'last');
             Saving_Folder_check = Saving_Name_tmp(1:Saving_Folder_check_index - 1);

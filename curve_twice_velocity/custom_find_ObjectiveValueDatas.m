@@ -5,7 +5,8 @@ function [ObjectiveValueDatas, dispObjectiveValueData_Str] = custom_find_Objecti
 ActivatingRate = Para.ActivatingRate;
 
 Pop_Num = Para.Pop_Num;
-Joint_num = Para.Joint_num;
+input_dim2_num = Para.input_dim2_num;
+input_dim3_num = Para.input_dim3_num;
 Elite_Num = Para.Elite_Num;
 Data_Set_Time = Para.Data_Set_Time;
 
@@ -25,7 +26,7 @@ else
     index = 1 + Elite_Num; %{肩、腰} * 離散時間 * 個体数
 end
 
-ActivatingRate_index = reshape(ActivatingRate(index, :,:), Joint_num, size(Data_Set_Time,1))';
+ActivatingRate_index = reshape(ActivatingRate(index, :,:), input_dim2_num, input_dim3_num)';
 
 [ObjectiveValueData, dispObjectiveValueData_Str] = Objective_Fcn(ActivatingRate_index);
 
@@ -37,9 +38,9 @@ end
 ObjectiveValueDatas(index,:) = ObjectiveValueData;
 
 parfor index = index + 1:Pop_Num %{肩、腰} * 離散時間 * 個体数
-    ActivatingRate_index = reshape(ActivatingRate(index, :,:), Joint_num, size(Data_Set_Time,1))';
+    ActivatingRate_index = reshape(ActivatingRate(index, :,:), input_dim2_num, input_dim3_num)';
     
-    [ObjectiveValueData, dispObjectiveValueData_Str] = Objective_Fcn(ActivatingRate_index);
+    ObjectiveValueData = Objective_Fcn(ActivatingRate_index);
     
     ObjectiveValueDatas(index,:) = ObjectiveValueData;
 end
