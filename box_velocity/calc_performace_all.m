@@ -1,7 +1,7 @@
 
 clear all
 
-step_num = 3;
+step_num = 5;
 Para.velocity_variety = linspace(-1,1,step_num);
 vv = Para.velocity_variety;
 
