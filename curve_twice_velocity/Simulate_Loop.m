@@ -2,12 +2,12 @@
 clear all
 
 AddPath_MATLABDATA
+    
+formatOut = 'yymmddHHMMss';
+dateString = datestr(now,formatOut);
+loop_start_time_str = dateString;
 
 for condition_index = 1:2
-    
-    formatOut = 'yymmddHHMMss';
-    dateString = datestr(now,formatOut);
-    loop_start_time_str = dateString;
     
     loop_limit = 100;
     
@@ -37,7 +37,7 @@ for condition_index = 1:2
             
             Para.Take_Over_Str = "";
             % ABOUT POP AND GENERATIONS
-            Para.Pop_Num = 1e2;
+            Para.Pop_Num = 2e3;
             Para.Gen_Num_Limit = 1e3;
             Para.Max_Annealing_Count_Without_Gain = 5;
             Para.Min_Annealing_Gen = 5;
@@ -56,7 +56,7 @@ for condition_index = 1:2
             Para.Elite_Num = 2 - mod(Para.Pop_Num,2);
             
             % ABOUT Annealing
-            Para.Base_Transition_Probability = 5;
+            Para.Base_Transition_Probability = 50;
             Para.Max_Transition_Probability = 97;
             
             Para.Minimum_Transition_Probablity = 0;
@@ -73,9 +73,9 @@ for condition_index = 1:2
             elseif condition_index == 2
                 % NoVibe-FyWrist-Component
                 Para.Mode_String = 'input_by_pca';
-                Para.input_dim2_num = 2;
+                Para.input_dim2_num = 1;
                 Para.input_dim3_num = 2 * size(Para.Data_Set_Time, 1);
-                Para.get_velocity_fromAR = @(AR) get_velocity_fromPCA_001(AR, size(Para.Data_Set_Time, 1), Para.Data_Category_num);
+                Para.get_velocity_fromAR = @(AR) get_velocity_fromPCA_004(AR, size(Para.Data_Set_Time, 1), Para.Data_Category_num);
                 Para.evaluating_time = 0:1e-2:7;
                 Para.get_trajectory = @(velocity, evaluating_time) get_trajectory(velocity, evaluating_time);
                 Para.Objective_Fcn = @(AR) objectiveFcn(AR, Para.get_trajectory, Para.get_velocity_fromAR, Para.evaluating_time);
