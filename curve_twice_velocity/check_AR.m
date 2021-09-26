@@ -6,10 +6,10 @@ clf('reset')
 ax201 = gca;
 plot_box(ax201)
 
-load('5950x_210923124501_input_by_pca_pop_200_gen_10')
+load('5950x_210926114243_input_by_time_pop_2000_gen_1000')
 
 AR = Para.ActivatingRate(1,:,:);
-AR = reshape(AR, Para.Joint_num, size(Para.Data_Set_Time,1))';
+AR = reshape(AR, Para.input_dim2_num, Para.input_dim3_num)';
 
 velocity = Para.get_velocity_fromAR(AR);
 
@@ -24,7 +24,7 @@ y_trajectory = trajectory_edge(:,2);
 % get_norm1(trajectory, isInBox_array)
 
 dockfig(200)
-plot(1:5, velocity, '-o')
+plot(Para.Data_Set_Time, velocity, '-o')
 legend('x', 'y')
 ylim([-1, 1])
 ax200 = gca;
